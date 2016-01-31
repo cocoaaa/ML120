@@ -1,42 +1,43 @@
 #!/usr/bin/python
 
 """ 
-    This is the code to accompany the Lesson 1 (Naive Bayes) mini-project. 
+    This is the code to accompany the Lesson 2 (SVM) mini-project.
 
-    Use a Naive Bayes Classifier to identify emails by their authors
-    
-    authors and labels:
+    Use a SVM to identify emails from the Enron corpus by their authors:    
     Sara has label 0
     Chris has label 1
 """
     
 import sys
 from time import time
-sys.path.append("../tools/")
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+import mytools
+sys.path.append("../ud120-projects-start/tools/")
 from email_preprocess import preprocess
 
-import numpy as np
-import pylab as pl
-import matplotlib.pyplot as plt
-from sklearn.naive_bayes import GaussianNB
-#import viztools
 
 ### features_train and features_test are the features for the training
 ### and testing datasets, respectively
 ### labels_train and labels_test are the corresponding item labels
 features_train, features_test, labels_train, labels_test = preprocess()
-clf = GaussianNB()
+kernel = "linear"
+clf = SVC(kernel=kernel)
 start = time()
-clf.fit(features_train, labels_train)
+clf.fit(features_train, features_test)
 train_time = time() - start
 
 start = time()
-accuracy = clf.score(features_test, labels_test)
+preds = clf.predict(features_test)
 test_time = time() - start
 
-print "training time: ", round(train_time,3)
-print "testing time: ", round(test_time,3)
-print "%accuracy: ", accuracy
+acc = accuracy_score(labels_test, preds)
+
+print "train time: ", train_time
+print "test time: ", test_time
+print "accuracy: ", acc
+
+mytools.prettyPicture(clf, features_test, labels_test)
 
 
 
@@ -44,7 +45,6 @@ print "%accuracy: ", accuracy
 
 #########################################################
 ### your code goes here ###
-
 
 #########################################################
 
